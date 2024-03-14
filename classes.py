@@ -39,18 +39,21 @@ class Record:
             found_phone.value = new_number
 
     def find_phone(self, phone_number):
-        return next(item for item in self.phones if item.value == phone_number)
+        return next((item for item in self.phones if item.value == phone_number), None)
 
     def __str__(self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
 
 
 class AddressBook(UserDict):
-    def add_record():
-        pass
+    def add_record(self, record: Record):
+        name = record.name.value
+        if name not in self.data.keys():
+            self.data[name] = record
 
-    def find():
-        pass
+    def find(self, name):
+        return self.data.get(name)
 
-    def delete():
-        pass
+    def delete(self, name):
+        if name in self.data.keys():
+            del self.data[name]
