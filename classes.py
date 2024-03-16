@@ -1,4 +1,5 @@
 from collections import UserDict
+from validation import validate_phone_number
 
 
 class Field:
@@ -15,7 +16,7 @@ class Name(Field):
 
 class Phone(Field):
     def is_valid(self):
-        return len(self.value) == 10
+        return validate_phone_number(self.value)
 
 
 class Record:
@@ -25,14 +26,23 @@ class Record:
 
     def add_phone(self, phone_number):
         phone = Phone(phone_number)
+        is_valid, error = phone.is_valid()
 
-        if phone.is_valid() and not self.find_phone(phone_number):
+        if not is_valid:
+            raise error
+
+        if not self.find_phone(phone_number):
             self.phones.append(phone)
 
     def remove_phone(self, phone_number):
         self.phones = [item for item in self.phones if item.value != phone_number]
 
     def edit_phone(self, old_number, new_number):
+        is_valid, error = Phone(new_number).is_valid()
+
+        if not is_valid:
+            raise error
+
         found_phone = self.find_phone(old_number)
 
         if found_phone:
